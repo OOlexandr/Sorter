@@ -1,9 +1,16 @@
 import sys
 import os
 
-def iterate(path):
-    for entry in os.listdir(path):
-        print(entry)
+def iterate(root, path = []):
+    dir_path = root
+    for dir in path:
+        dir_path = os.path.join(dir_path, dir)
+    for entry in os.listdir(dir_path):
+        entry_path = os.path.join(dir_path, entry)
+        if os.path.isdir(entry_path):
+            iterate(root, path = path+[entry])
+        else:
+            print(entry_path)
 
 
 def main():
