@@ -41,6 +41,8 @@ def iterate(root, relative_path = "", search_data = {}):
 
     dir_path = os.path.join(root, relative_path)
     for entry in os.listdir(dir_path):
+        if entry in file_types and not relative_path:
+            continue
         relative_entry_path = os.path.join(relative_path, entry)
         entry_path = os.path.join(dir_path, entry)
         if os.path.isdir(entry_path):
