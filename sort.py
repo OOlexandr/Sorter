@@ -1,14 +1,13 @@
 import sys
 import os
 
-def iterate(root, path = []):
-    dir_path = root
-    for dir in path:
-        dir_path = os.path.join(dir_path, dir)
+def iterate(root, relative_path = ""):
+    dir_path = os.path.join(root, relative_path)
     for entry in os.listdir(dir_path):
+        relative_entry_path = os.path.join(relative_path, entry)
         entry_path = os.path.join(dir_path, entry)
         if os.path.isdir(entry_path):
-            iterate(root, path = path+[entry])
+            iterate(root, relative_path = relative_entry_path)
         else:
             print(entry_path)
 
