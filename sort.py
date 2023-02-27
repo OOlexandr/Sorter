@@ -47,11 +47,15 @@ def iterate(root, relative_path = "", search_data = {}):
             search_data = iterate(root, relative_path=relative_entry_path, search_data=search_data)
         else:
             extension = os.path.splitext(entry_path)[1]
+
+            is_type_recognized = False
             for type in file_types:
                 if extension in file_types[type]:
                     search_data[type].append(entry_path)
                     search_data["found_extensions"].add(extension)
-                    continue
+                    is_type_recognized = True
+                    break
+            if not is_type_recognized:
                 search_data["unknown"].append(entry_path)
                 search_data["unknown_extensions"].add(extension)
     
@@ -63,7 +67,8 @@ def sort(path):
 
 def main():
     try:
-        path = sys.argv[1]
+        #path = sys.argv[1]
+        path = "D:\\TestFolder" #for debugging
         sort(path)
     except IndexError:
         print("Error. Path to the folder is required")
