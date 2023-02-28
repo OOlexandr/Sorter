@@ -18,13 +18,35 @@ def move_audio(root, files):
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_video(root, files):
-    pass
+    destination = os.path.join(root, "video")
+    if not os.path.exists(destination):
+        os.makedirs(destination)
+    for file in files:
+        file_path = os.path.join(root, file)
+        new_file_name = os.path.basename(file) #later names will be normalized here
+        new_file_path = os.path.join(destination, new_file_name)
+        os.rename(file_path, new_file_path)
 def move_images(root, files):
-    pass
+    destination = os.path.join(root, "images")
+    if not os.path.exists(destination):
+        os.makedirs(destination)
+    for file in files:
+        file_path = os.path.join(root, file)
+        new_file_name = os.path.basename(file) #later names will be normalized here
+        new_file_path = os.path.join(destination, new_file_name)
+        os.rename(file_path, new_file_path)
 def move_documents(root, files):
-    pass
+    destination = os.path.join(root, "documents")
+    if not os.path.exists(destination):
+        os.makedirs(destination)
+    for file in files:
+        file_path = os.path.join(root, file)
+        new_file_name = os.path.basename(file) #later names will be normalized here
+        new_file_path = os.path.join(destination, new_file_name)
+        os.rename(file_path, new_file_path)
 def move_archives(root, files):
     pass
+#"add functions, responsible for work with every file type" - task.
 
 moving_functions = {
     "images": move_images,
