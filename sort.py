@@ -1,5 +1,6 @@
 import sys
 import os
+import shutil
 
 file_types = {
     "images": [".jpeg", ".jpg", ".png", ".svg"],
@@ -45,7 +46,16 @@ def move_documents(root, files):
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_archives(root, files):
-    pass
+    destination = os.path.join(root, "archives")
+    if not os.path.exists(destination):
+        os.makedirs(destination)
+    for archive in files:
+        archive_path = os.path.join(root, archive)
+        new_archive_name = os.path.splitext(os.path.basename(archive))[0]
+        #later names will be normalized here
+        new_archive_path = os.path.join(destination, new_archive_name)
+        shutil.unpack_archive(archive_path, new_archive_path)
+        os.remove(archive_path)
 #"add functions, responsible for work with every file type" - task.
 
 moving_functions = {
