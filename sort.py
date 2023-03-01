@@ -3,6 +3,13 @@ import os
 import shutil
 import re
 
+file_types = {
+    "images": [".jpeg", ".jpg", ".png", ".svg"],
+    "video": [".avi", ".mp4", ".mov", ".mkv"],
+    "documents": [".doc", ".docx", ".txt", ".pdf", ".xlsx", ".pptx"],
+    "audio": [".mp3", ".ogg", ".wav", ".amr"],
+    "archives": [".zip", ".gz", ".tar"]}
+
 CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
 TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
                "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g")
@@ -27,13 +34,23 @@ def normalize(name, is_dir = False):
     if not is_dir:
         name += extension
     return name
-    
-file_types = {
-    "images": [".jpeg", ".jpg", ".png", ".svg"],
-    "video": [".avi", ".mp4", ".mov", ".mkv"],
-    "documents": [".doc", ".docx", ".txt", ".pdf", ".xlsx", ".pptx"],
-    "audio": [".mp3", ".ogg", ".wav", ".amr"],
-    "archives": [".zip", ".gz", ".tar"]}
+
+def clean(root, relative_path="", ignore=[]):
+    dir_path = os.path.join(root, relative_path)
+    for entry in os.listdir(dir_path):
+        if entry in ignore:
+            continue
+        relative_entry_path = os.path.join(relative_path, entry)
+        entry_path = os.path.join(dir_path, entry)
+        if os.path.isdir(entry_path):
+            clean(root, relative_path=relative_entry_path)
+    if os.listdir(dir_path):
+        dir_name = os.path.basename(dir_path)
+        dir_parent = os.path.dirname(dir_path)
+        dir_name = normalize(dir_name)
+        os.rename(dir_path, os.path.join(dir_parent, dir_name))
+    else:
+        os.rmdir(dir_path)
 
 def move_audio(root, files):
     destination = os.path.join(root, "audio")
@@ -101,15 +118,6 @@ def move_files(root, catalogue):
         if catalogue[type]:
             moving_functions[type](root, catalogue[type])
 
-
-def prepare(directory):
-    #Checks if folders for all the types of file exists
-    #and creates them if they do not exist
-    for type in file_types:
-        path = os.path.join(directory, type)
-        if not os.path.exists(path):
-            os.makedirs(path)
-
 def log(sort_result):
     #sort_result - dict, that holds information about sorted files,
     #met extensions and unknown extensions
@@ -159,6 +167,7 @@ def sort(path):
     files = catalogue(path, ignore = file_types.keys())
     log(files)
     move_files(path, files)
+    clean(path, ignore = file_types.keys())
 
 def main():
     try:
