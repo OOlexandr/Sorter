@@ -1,7 +1,33 @@
 import sys
 import os
 import shutil
+import re
 
+CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
+TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
+               "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g")
+
+TRANS = {}
+
+for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
+    TRANS[ord(c)] = l
+    TRANS[ord(c.upper())] = l.upper()
+
+def translate(name):
+    return name.translate(TRANS)
+
+def normalize(name, is_dir = False):
+    extension = ""
+    if not is_dir:
+        full_name = os.path.splitext(name)
+        name = full_name[0]
+        extension += full_name[1]
+    name = translate(name)
+    name = re.sub(r"[ ()\-,.]", "_", name)
+    if not is_dir:
+        name += extension
+    return name
+    
 file_types = {
     "images": [".jpeg", ".jpg", ".png", ".svg"],
     "video": [".avi", ".mp4", ".mov", ".mkv"],
@@ -15,7 +41,8 @@ def move_audio(root, files):
         os.makedirs(destination)
     for file in files:
         file_path = os.path.join(root, file)
-        new_file_name = os.path.basename(file) #later names will be normalized here
+        new_file_name = os.path.basename(file)
+        new_file_name = normalize(new_file_name)
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_video(root, files):
@@ -24,7 +51,8 @@ def move_video(root, files):
         os.makedirs(destination)
     for file in files:
         file_path = os.path.join(root, file)
-        new_file_name = os.path.basename(file) #later names will be normalized here
+        new_file_name = os.path.basename(file)
+        new_file_name = normalize(new_file_name)
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_images(root, files):
@@ -33,7 +61,8 @@ def move_images(root, files):
         os.makedirs(destination)
     for file in files:
         file_path = os.path.join(root, file)
-        new_file_name = os.path.basename(file) #later names will be normalized here
+        new_file_name = os.path.basename(file)
+        new_file_name = normalize(new_file_name)
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_documents(root, files):
@@ -42,7 +71,8 @@ def move_documents(root, files):
         os.makedirs(destination)
     for file in files:
         file_path = os.path.join(root, file)
-        new_file_name = os.path.basename(file) #later names will be normalized here
+        new_file_name = os.path.basename(file)
+        new_file_name = normalize(new_file_name)
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_archives(root, files):
@@ -52,7 +82,7 @@ def move_archives(root, files):
     for archive in files:
         archive_path = os.path.join(root, archive)
         new_archive_name = os.path.splitext(os.path.basename(archive))[0]
-        #later names will be normalized here
+        new_archive_name = normalize(new_archive_name)
         new_archive_path = os.path.join(destination, new_archive_name)
         shutil.unpack_archive(archive_path, new_archive_path)
         os.remove(archive_path)
