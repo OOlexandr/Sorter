@@ -122,9 +122,18 @@ def log(sort_result):
     #sort_result - dict, that holds information about sorted files,
     #met extensions and unknown extensions
     #outputs this information into console
-
-    #TODO
-    print(sort_result)
+    message = "Soring is complete. Found files are:"
+    for type in file_types:
+        if sort_result[type]:
+            message += f"\n{type}:"
+            for file in sort_result[type]:
+                message += f"\n\t{file}"
+    if sort_result["found_extensions"]:
+        message += "\nSorted files had extensions: " + ' '.join(sort_result["found_extensions"])
+    if sort_result["unknown_extensions"]:
+        message += "\nAlso were found files with unknown extensions: " \
+                    + ' '.join(sort_result["unknown_extensions"])
+    print(message)
 
 def catalogue(root, relative_path = "", search_data = {}, ignore = []):
     #walks through the folder sorts files and records data about them
@@ -165,20 +174,18 @@ def catalogue(root, relative_path = "", search_data = {}, ignore = []):
 def sort(path):
     #prepare(path) obsolete
     files = catalogue(path, ignore = file_types.keys())
-    log(files)
     move_files(path, files)
     clean(path, ignore = file_types.keys())
+    log(files)
 
 def main():
-    try:
-        #path = sys.argv[1]
-        path = "D:\\TestFolder" #for debugging
-        sort(path)
-    except IndexError:
+    if len(sys.argv) < 2:
         print("Error. Path to the folder is required")
         return
-    except FileNotFoundError:
+    path = sys.argv[1]
+    if not os.path.exists(path):
         print("Error. Specified path is not valid")
         return
-
+    sort(path)
+    
 main()
