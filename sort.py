@@ -56,50 +56,85 @@ def move_audio(root, files):
     destination = os.path.join(root, "audio")
     if not os.path.exists(destination):
         os.makedirs(destination)
+    names_encountered = {}
     for file in files:
         file_path = os.path.join(root, file)
         new_file_name = os.path.basename(file)
         new_file_name = normalize(new_file_name)
+        if new_file_name in names_encountered:
+            names_encountered[new_file_name] += 1
+            base_name, extension = os.path.splitext(new_file_name)
+            new_file_name = base_name + '_' + str(names_encountered[new_file_name]) + extension
+        else:
+            names_encountered[new_file_name] = 1
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_video(root, files):
     destination = os.path.join(root, "video")
     if not os.path.exists(destination):
         os.makedirs(destination)
+    names_encountered = {}
     for file in files:
         file_path = os.path.join(root, file)
         new_file_name = os.path.basename(file)
         new_file_name = normalize(new_file_name)
+        if new_file_name in names_encountered:
+            names_encountered[new_file_name] += 1
+            base_name, extension = os.path.splitext(new_file_name)
+            new_file_name = base_name + '_' + str(names_encountered[new_file_name]) + extension
+        else:
+            names_encountered[new_file_name] = 1
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_images(root, files):
     destination = os.path.join(root, "images")
     if not os.path.exists(destination):
         os.makedirs(destination)
+    names_encountered = {}
     for file in files:
         file_path = os.path.join(root, file)
         new_file_name = os.path.basename(file)
         new_file_name = normalize(new_file_name)
+        if new_file_name in names_encountered:
+            names_encountered[new_file_name] += 1
+            base_name, extension = os.path.splitext(new_file_name)
+            new_file_name = base_name + '_' + str(names_encountered[new_file_name]) + extension
+        else:
+            names_encountered[new_file_name] = 1
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_documents(root, files):
     destination = os.path.join(root, "documents")
     if not os.path.exists(destination):
         os.makedirs(destination)
+    names_encountered = {}
     for file in files:
         file_path = os.path.join(root, file)
         new_file_name = os.path.basename(file)
         new_file_name = normalize(new_file_name)
+        if new_file_name in names_encountered:
+            names_encountered[new_file_name] += 1
+            base_name, extension = os.path.splitext(new_file_name)
+            new_file_name = base_name + '_' + str(names_encountered[new_file_name]) + extension
+        else:
+            names_encountered[new_file_name] = 1
         new_file_path = os.path.join(destination, new_file_name)
         os.rename(file_path, new_file_path)
 def move_archives(root, files):
     destination = os.path.join(root, "archives")
     if not os.path.exists(destination):
         os.makedirs(destination)
+    names_encountered = {}
     for archive in files:
         archive_path = os.path.join(root, archive)
         new_archive_name = os.path.splitext(os.path.basename(archive))[0]
         new_archive_name = normalize(new_archive_name)
+        if new_archive_name in names_encountered:
+            names_encountered[new_archive_name] += 1
+            base_name, extension = os.path.splitext(new_archive_name)
+            new_archive_name = base_name + '_' + str(names_encountered[new_archive_name]) + extension
+        else:
+            names_encountered[new_archive_name] = 1
         new_archive_path = os.path.join(destination, new_archive_name)
         shutil.unpack_archive(archive_path, new_archive_path)
         os.remove(archive_path)
@@ -187,5 +222,6 @@ def main():
         print("Error. Specified path is not valid")
         return
     sort(path)
-    
-main()
+
+if __name__ == '__main__':
+    main()
