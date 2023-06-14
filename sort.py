@@ -2,6 +2,8 @@ import sys
 import os
 import shutil
 import re
+from threading import Thread
+from time import sleep
 
 file_types = {
     "images": [".jpeg", ".jpg", ".png", ".svg"],
@@ -148,16 +150,28 @@ moving_functions = {
     "archives": move_archives
 }
 
+class MyThread(Thread):
+    def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
+        super().__init__(group=group, target=target, name=name, daemon=daemon)
+        self.args = args
+        self.kwargs = kwargs
+
+    def run(self):
+        self.args[0](self.args[1], self.args[2])
+
 def move_files(root, catalogue):
     for type in file_types:
         if catalogue[type]:
-            moving_functions[type](root, catalogue[type])
+            mover = MyThread(args=(moving_functions[type], root, catalogue[type]))
+            mover.start()
+            #moving_functions[type](root, catalogue[type])
+    sleep(0.5)
 
 def log(sort_result):
     #sort_result - dict, that holds information about sorted files,
     #met extensions and unknown extensions
     #outputs this information into console
-    message = "Soring is complete. Found files are:"
+    message = "Storing is complete. Found files are:"
     for type in file_types:
         if sort_result[type]:
             message += f"\n{type}:"
